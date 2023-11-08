@@ -38,5 +38,5 @@ if __name__ == '__main__':
     # Verifico el valor del coeficiente de amortiguamiento obtenido.
     result = euler_mejorado(lambda v, x: (-456.341 * v/m) - (K * x / m) + Fm/m, [(0, 0)], h)
     print()
-    print("Valor de la ecuación diferencial evaluada en el 'c' hallado = ", round(result[-1][1], 4), "m")
+    print("Valor de la ecuación diferencial evaluada en el 'c' hallado = ", result[-1][1], "m")
 
