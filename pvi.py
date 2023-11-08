@@ -12,7 +12,7 @@ xadm = 3.4 / 1000  # Desplazamiento admisible en metros (3.4 mm)
 P = 1.0351603978423491  # Periodo en segundos
 
 
-def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List[Tuple[float, float]], h: float, desired_cycles: float) -> List[Tuple[float, float]]:
+def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List[Tuple[float, float]], h: float) -> List[Tuple[float, float]]:
     solutions = [initial_conds[0]]  # Inicializa la lista de soluciones
     P = 1.0351603978423491  # Período en segundos
 
@@ -26,8 +26,8 @@ def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List
     # Bucle exterior: verifica si hemos alcanzado la cantidad deseada de ciclos
     while current_cycles < total_cycles:
         # Inicializa las condiciones iniciales para este ciclo
-        initial_conditions = solutions[-1]
         iteration = 0
+        initial_conditions = solutions[iteration-1]
 
         # Bucle interior: realiza la integración para un ciclo
         while current_time < P:
@@ -48,5 +48,5 @@ def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List
     return solutions
 
 if __name__ == '__main__':
-    print(euler_mejorado(lambda x, y: 2*x*y + x, [(0, 0)], 1, 0))
+    print(euler_mejorado(lambda x, y: 2*x*y + x, [(0, 0)], 1))
 
