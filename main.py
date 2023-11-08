@@ -1,4 +1,4 @@
-from metodo_secante import secante_con_validacion
+from metodo_secante import secante_con_validacion, metodo_secante
 from pvi import euler_mejorado
 from typing import List, Tuple
 
@@ -8,7 +8,7 @@ K = 350e3  # Constante del resorte en N/m (350 N/mm)
 Fm = 1650  # Fuerza máxima en N
 xadm = 3.4 / 1000  # Desplazamiento admisible en metros (3.4 mm)
 P = 1.0351603978423491  # Periodo en segundos
-h = 0.1
+h = P / 500 # Quiero 500 puntos por ciclo.
 initial_conditions: List[Tuple[float, float]] = [(0, 0)]  # Pares de valores (x;y)
 
 
@@ -22,10 +22,10 @@ def ec_dif(c):
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
     solution = euler_mejorado(ec_dif(c), initial_conditions, h)
-    return solution[-1][1]  # Devuelve la última amplitud obtenida
+    return solution[-1][1]  # Devuelve el valor en y de la última amplitud obtenida
 
 
-def secante_con_validacion(f, x0, x1, err):
+def secante_con_validacion2(f, x0, x1, err):
     f0 = f(x0)
     f1 = f(x1)
 
@@ -34,7 +34,7 @@ def secante_con_validacion(f, x0, x1, err):
         x1 += 1e-10
 
     # Continúa con el método de la secante
-    coeficiente_amortiguamiento = secante_con_validacion(f, x0, x1, err)
+    coeficiente_amortiguamiento = secante_con_validacion2(f, x0, x1, err)
     return coeficiente_amortiguamiento
 
 
@@ -47,5 +47,5 @@ if __name__ == '__main__':
     tolerancia = 1e-3
 
     # Calcula el coeficiente de amortiguamiento "c" que evita vibraciones excesivas
-    coeficiente_amortiguamiento = secante_con_validacion(f, X0, X1, tolerancia)
+    coeficiente_amortiguamiento = metodo_secante(f, X0, X1, tolerancia)
     print(f"El coeficiente de amortiguamiento que evita vibraciones excesivas es: {coeficiente_amortiguamiento:.3f}")

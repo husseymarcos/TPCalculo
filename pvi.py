@@ -16,7 +16,7 @@ def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List
     solutions = [initial_conds[0]]  # Inicializa la lista de soluciones
 
     # Inicializa las variables de ciclo y tiempo
-    current_time = 0
+    current_time: float = 0
 
     # Bucle exterior: realiza la integración para un ciclo
     while current_time < P:
@@ -31,7 +31,7 @@ def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List
 
 def calcular_amplitud_deseada(c):
     # Función para calcular la amplitud deseada en función de "c"
-    initial_conditions = [(xadm, 0)]  # Condición inicial (desplazamiento y velocidad)
+    initial_conditions = [(0, 0)]  # Condición inicial (desplazamiento y velocidad)
     solution = euler_mejorado(lambda x, v: -(c / m) * v - (K / m) * x + (Fm / m), initial_conditions, h)
     return solution[-1][0]  # Devuelve la última amplitud obtenida
 
@@ -45,6 +45,6 @@ if __name__ == '__main__':
     h = P / total_points  # Ajuste el paso de cálculo
 
     # Llama a la función euler_mejorado con el nuevo valor de h
-    result = euler_mejorado(lambda x, y: 2*x*y + x, [(0, 0)], h)
+    result = euler_mejorado(lambda x, y: 2*x*y + x, [(0, 0.5)], 1)
     print(result)
 
