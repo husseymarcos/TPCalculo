@@ -14,39 +14,37 @@ P = 1.0351603978423491  # Periodo en segundos
 
 def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List[Tuple[float, float]], h: float) -> List[Tuple[float, float]]:
     solutions = [initial_conds[0]]  # Inicializa la lista de soluciones
-    P = 1.0351603978423491  # Período en segundos
-
-    # Calcula el número total de ciclos necesarios
-    total_cycles = 2 * math.pi / P
 
     # Inicializa las variables de ciclo y tiempo
-    current_cycles = 0
-    current_time:float = 0
+    current_time = 0
 
-    # Bucle exterior: verifica si hemos alcanzado la cantidad deseada de ciclos
-    while current_cycles < total_cycles:
-        # Inicializa las condiciones iniciales para este ciclo
-        iteration = 0
-        initial_conditions = solutions[iteration-1]
-
-        # Bucle interior: realiza la integración para un ciclo
-        while current_time < P:
-            conds = initial_conditions
-            x_incremented = conds[0] + h
-            f1 = h * diff_eq(conds[0], conds[1])
-            f2 = h * diff_eq(x_incremented, conds[1] + f1)
-            yf = conds[1] + (1 / 2 * (f1 + f2))
-            solutions.append((x_incremented, yf))
-            initial_conditions = (x_incremented, yf)
-            current_time += h
-            iteration += 1
-
-        # Actualiza el número de ciclos completados
-        current_cycles += 1
-        current_time = 0
+    # Bucle exterior: realiza la integración para un ciclo
+    while current_time < P:
+        conds = solutions[-1]
+        f1 = h * diff_eq(conds[0], conds[1])
+        f2 = h * diff_eq(conds[0] + h, conds[1] + f1)
+        yf = conds[1] + (1 / 2 * (f1 + f2))
+        current_time += h
+        solutions.append((conds[0] + h, yf))
 
     return solutions
 
+def calcular_amplitud_deseada(c):
+    # Función para calcular la amplitud deseada en función de "c"
+    initial_conditions = [(xadm, 0)]  # Condición inicial (desplazamiento y velocidad)
+    solution = euler_mejorado(lambda x, v: -(c / m) * v - (K / m) * x + (Fm / m), initial_conditions, h)
+    return solution[-1][0]  # Devuelve la última amplitud obtenida
+
+
+
 if __name__ == '__main__':
-    print(euler_mejorado(lambda x, y: 2*x*y + x, [(0, 0)], 1))
+    # Cálculo del paso de cálculo para tener al menos 500 puntos por ciclo
+    desired_points_per_cycle = 500
+    total_cycles = 2 * math.pi / P
+    total_points = int(desired_points_per_cycle * total_cycles)
+    h = P / total_points  # Ajuste el paso de cálculo
+
+    # Llama a la función euler_mejorado con el nuevo valor de h
+    result = euler_mejorado(lambda x, y: 2*x*y + x, [(0, 0)], h)
+    print(result)
 
