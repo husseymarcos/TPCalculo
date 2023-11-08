@@ -32,3 +32,4 @@ if __name__ == '__main__':
     # Ejemplo.
     #print(metodo_secante(lambda x: x - math.exp(-x) + x - 3, 1, 0.53788284, 0.001))
     print(metodo_secante(lambda x: x**2 - 4, 7, 5, 0.001))
+
