@@ -1,5 +1,4 @@
 import math
-# import numpy as np
 from typing import Callable, List, Tuple
 
 # PVI: m⋅x′′(t) + c⋅x′(t) + k⋅x(t) = F(t)
@@ -37,6 +36,7 @@ if __name__ == '__main__':
     h = P / desired_points_per_cycle
 
     # Verifico el valor del coeficiente de amortiguamiento obtenido.
-    result = euler_mejorado(lambda v, x: (-456.3 * v/m) - (K * x / m) + Fm/m, [(0, 0)], h)
-    print(result)
+    result = euler_mejorado(lambda v, x: (-456.341 * v/m) - (K * x / m) + Fm/m, [(0, 0)], h)
+    print()
+    print("Valor de la ecuación diferencial evaluada en el 'c' hallado = ", round(result[-1][1], 4), "m")
 

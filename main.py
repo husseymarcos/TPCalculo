@@ -28,8 +28,8 @@ g = lambda c: f(c) - xadm
 
 if __name__ == '__main__':
     # Valores arbitrarios iniciales para X0 y X1
-    X0 = 20.0
-    X1 = 30.0
+    X0 = 15.0
+    X1 = 20.0
 
     # Calcula el coeficiente de amortiguamiento "c" que evita vibraciones excesivas
     coeficiente_amortiguamiento = ms(g, X0, X1, tolerancia)
