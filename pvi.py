@@ -21,7 +21,7 @@ def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List
 
     # Inicializa las variables de ciclo y tiempo
     current_cycles = 0
-    current_time = 0
+    current_time:float = 0
 
     # Bucle exterior: verifica si hemos alcanzado la cantidad deseada de ciclos
     while current_cycles < total_cycles:
@@ -46,3 +46,7 @@ def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List
         current_time = 0
 
     return solutions
+
+if __name__ == '__main__':
+    print(euler_mejorado(lambda x, y: 2*x*y + x, [(0, 0)], 1, 0))
+
