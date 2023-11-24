@@ -1,4 +1,5 @@
 import math
+import matplotlib.pyplot as plt
 from typing import Callable, List, Tuple
 
 # PVI: m⋅x′′(t) + c⋅x′(t) + k⋅x(t) = F(t)
@@ -7,7 +8,6 @@ from typing import Callable, List, Tuple
 m = 9500  # Masa en kg (9.5 toneladas)
 K = 350e3  # Constante del resorte en N/m (350 N/mm)
 Fm = 1650  # Fuerza máxima en N
-xadm = 3.4 / 1000  # Desplazamiento admisible en metros (3.4 mm)
 P = 1.0351603978423491  # Período en segundos
 
 # Runge-Kutta de segundo orden. Recibe una ecuación diferencial, unas condiciones iniciales y un valor de h.
@@ -29,13 +29,25 @@ def euler_mejorado(diff_eq: Callable[[float, float, float], float], initial_cond
 
     return solutions # Retorno una lista con las iteraciones.
 
+# Función para la ecuación diferencial con la fuerza cíclica
+def diff_eq(x, v, t):
+    return (-456.341 * v/m) - (K * x / m) + Fm/m * math.cos(2 * math.pi * t / P)
 
 if __name__ == '__main__':
     desired_points_per_cycle = 500
-    # Calculo un valor de 'h' tal que hayan 500 puntos por ciclo.
+    # Calculo un valor de 'h' tal que haya 500 puntos por ciclo.
     h = P / desired_points_per_cycle
 
-    # Verifico el valor del coeficiente de amortiguamiento obtenido.
-    result = euler_mejorado(lambda x, v, t: (-456.341 * v/m) - (K * x / m) + Fm/m * math.cos(2 * math.pi * t / P), [(0, 0)], h)
-    print()
-    print("Valor de la ecuación diferencial evaluada en el 'c' hallado = ", result[-1][1], "m")
+    # Simulación del sistema con el valor del coeficiente de amortiguamiento obtenido
+    result = euler_mejorado(diff_eq, [(0, 0)], h)
+
+    # Extracción de los resultados para graficar
+    time_points = [point[0] for point in result]
+    displacement_points = [point[1] for point in result]
+
+    # Gráfico de la respuesta del sistema
+    plt.plot(time_points, displacement_points, label=f'Coeficiente de amortiguamiento: {4778225.582:.3f}')
+    plt.xlabel('Tiempo (s)')
+    plt.ylabel('Desplazamiento')
+    plt.legend()
+    plt.show()
