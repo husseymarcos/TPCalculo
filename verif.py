@@ -9,32 +9,46 @@ m = 9500  # Masa en kg (9.5 toneladas)
 K = 350e3  # Constante del resorte en N/m (350 N/mm)
 Fm = 1650  # Fuerza máxima en N
 P = 1.0351603978423491  # Período en segundos
+xadm = 3.4 / 1000
+
 
 # Runge-Kutta de segundo orden. Recibe una ecuación diferencial, unas condiciones iniciales y un valor de h.
 # 'initial_conds' es una lista de tuplas, donde cada tupla es un par ordenado (x; y)
-def euler_mejorado(diff_eq: Callable[[float, float, float], Tuple[float, float]], initial_conds: List[Tuple[float, float]], h: float) -> List[Tuple[float, float]]:
-    solutions = [initial_conds[0]]  # Inicializa la lista de soluciones
+def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List[Tuple[float, float]], h: float) -> List[Tuple[float, float]]:
+    solution = []
 
-    # Inicializa las variables de ciclo y tiempo
-    current_time: float = 0
+    for y0, t0 in initial_conds:
+        # Inicializar variables
+        t = t0
+        y = y0
 
-    # Bucle que verifica que se hagan 500 cálculos por período.
-    while current_time < P:
-        conds = solutions[-1] # Las condiciones iniciales de la iteracion actual (xi+1; yi+1) es la solucion de la iteracion previa (xi; yi)
-        f1, g1 = diff_eq(conds[1], conds[0], current_time)
-        f2, g2 = diff_eq(conds[1] + h * g1, conds[0] + h * f1, current_time + h)
-        yf = conds[0] + (1 / 2 * (f1 + f2))
-        vf = conds[1] + (1 / 2 * (g1 + g2))
-        current_time += h # Incremento la variable que controla el bucle.
-        solutions.append((yf, vf))
+        # Almacenar las condiciones iniciales en la solución
+        solution.append((t, y))
 
-    return solutions # Retorno una lista con las iteraciones.
+        # Iterar hasta alcanzar el punto final
+        while t < 10:  # Puedes ajustar el límite superior según tus necesidades
+            # Calcular k1 y k2
+            k1 = h * diff_eq(y, t)
+            k2 = h * diff_eq(y + k1, t + h)
+
+            # Calcular el siguiente valor de y usando la fórmula del método de Euler mejorado
+            y = y + 0.5 * (k1 + k2)
+
+            # Incrementar el tiempo
+            t += h
+
+            # Agregar el punto a la solución
+            solution.append((t, y))
+
+    return solution
+
 
 # Función para la ecuación diferencial con la fuerza cíclica
 def diff_eq(x, v, t):
     dx_dt = v
-    dv_dt = (-456.341 * v/m) - (K * x / m) + Fm/m * math.cos(2 * math.pi * t / P)
+    dv_dt = (-456.341 * v / m) - (K * x / m) + Fm / m * math.cos(2 * math.pi * t / P)
     return dx_dt, dv_dt
+
 
 if __name__ == '__main__':
     desired_points_per_cycle = 500
@@ -52,5 +66,6 @@ if __name__ == '__main__':
     plt.plot(time_points, displacement_points, label=f'Coeficiente de amortiguamiento: {4778225.582:.3f}')
     plt.xlabel('Tiempo (s)')
     plt.ylabel('Desplazamiento')
+    plt.axhline(y=xadm, color='r', linestyle='--', label=f'Desplazamiento máximo permitido ({xadm} m)')
     plt.legend()
     plt.show()

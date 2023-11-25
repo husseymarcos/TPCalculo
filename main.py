@@ -1,6 +1,5 @@
 from metodo_secante import metodo_secante as ms
 from pvi import euler_mejorado
-from typing import List, Tuple
 import numpy as np
 
 # Datos del problema
@@ -11,12 +10,12 @@ xadm = 3.4 / 1000  # Desplazamiento admisible en metros (3.4 mm)
 P = 1.0351603978423491  # Periodo en segundos
 tolerancia = 1e-3  # Tolerancia para el método de la secante
 h = P / 500  # Quiero 500 puntos por ciclo.
-initial_conditions: List[Tuple[float, float]] = [(0, 0)]  # Pares de valores (x;y)
+initial_conditions = [(0, 0)]  # Pares de valores (x;y)
 
 
 # Ecuacion diferencial con la fuerza cíclica
 def ec_dif(c):
-    return lambda v, x: -(c / m) * v - (K / m) * x + (Fm / m) * np.cos(2 * np.pi/ P)
+    return lambda v, x: -(c / m) * v - (K / m) * x + (Fm / m) * np.cos(2 * np.pi / P)
 
 
 # Función para calcular la amplitud deseada en función de "c"
@@ -32,13 +31,16 @@ if __name__ == '__main__':
     try:
         # Valores iniciales para X0 y X1
         X0 = 5.0
-        X1 = 50.0
+        X1 = 10.0
 
         # Calcula el coeficiente de amortiguamiento "c" que evita vibraciones excesivas
         coeficiente_amortiguamiento = ms(g, X0, X1, tolerancia)
 
-        print(
-            f"El valor del coeficiente de amortiguamiento que evita vibraciones excesivas es: {coeficiente_amortiguamiento:.3f}")
+        print(f"El valor del coeficiente de amortiguamiento que evita vibraciones excesivas es: {coeficiente_amortiguamiento:.3f}")
+
+        # Utiliza el coeficiente de amortiguamiento en la función f(c)
+        amplitud_deseada = f(coeficiente_amortiguamiento)
+        print(f"La amplitud deseada con el coeficiente de amortiguamiento obtenido es: {amplitud_deseada:.4f}")
 
     except Exception as e:
         print(f"Se produjo un error: {e}")
