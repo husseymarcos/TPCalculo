@@ -20,7 +20,8 @@ def ec_dif(c):
 
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
-    solution = euler_mejorado(ec_dif(c), initial_conditions, h)
+    diff_eq_c = ec_dif(c)
+    solution = euler_mejorado(diff_eq_c, initial_conditions, h)
     return solution[-1][1]  # Devuelve el valor en y de la última iteración del método.
 
 
@@ -30,8 +31,8 @@ g = lambda c: f(c) - xadm
 if __name__ == '__main__':
     try:
         # Valores iniciales para X0 y X1
-        X0 = 5.0
-        X1 = 10.0
+        X0 = 0.1
+        X1 = 0.2
 
         # Calcula el coeficiente de amortiguamiento "c" que evita vibraciones excesivas
         coeficiente_amortiguamiento = ms(g, X0, X1, tolerancia)
