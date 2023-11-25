@@ -33,6 +33,6 @@ def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List
 if __name__ == '__main__':
 
     # Verifico el valor del coeficiente de amortiguamiento obtenido.
-    result = euler_mejorado(lambda x, v: (-420.069 * v / m) - (K * x / m) + (Fm / m) * math.cos(2 * math.pi / P),
+    result = euler_mejorado(lambda x, v: (-419.206 * v / m) - (K * x / m) + (Fm / m) * math.cos(2 * math.pi / P),
                             [(0, 0)], h)
     print("Valor de la ecuación diferencial evaluada en el 'c' hallado = ", result[-1][1], "m")

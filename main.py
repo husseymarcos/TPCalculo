@@ -15,7 +15,7 @@ initial_conditions = [(0, 0)]  # Pares de valores (x;y)
 
 # Ecuacion diferencial con la fuerza cíclica
 def ec_dif(c):
-    return lambda v, x: -(c / m) * v - (K / m) * x + (Fm / m) * np.cos(2 * np.pi / P)
+    return lambda v, x: -(c / m) * v - (K / m) * x + (Fm / m) * np.cos((2 * np.pi / P) * v)
 
 
 # Función para calcular la amplitud deseada en función de "c"
