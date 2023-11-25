@@ -1,8 +1,6 @@
 import math
 from typing import Callable, List, Tuple
 
-# PVI: m⋅x′′(t) + c⋅x′(t) + k⋅x(t) = F(t)
-
 # Datos del problema
 m = 9500  # Masa en kg (9.5 toneladas)
 K = 350e3  # Constante del resorte en N/m (350 N/mm)
@@ -20,10 +18,11 @@ def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List
     # Bucle que verifica que se hagan 500 cálculos por período.
     while len(solutions) < 500:
         conds = solutions[
-            -1]  # Las condiciones iniciales de la iteracion actual (xi+1; yi+1) es la solucion de la iteracion previa (xi; yi)
-        f1 = h * diff_eq(conds[1], conds[0])
-        f2 = h * diff_eq(conds[1] + f1, conds[0] + h)
-        yf = conds[0] + (1 / 2 * (f1 + f2))
+            -1]  # Las condiciones iniciales de la iteracion actual (xi+1; yi+1) es la solucion de la iteracion
+        # previa (xi; yi)
+        f1 = h * diff_eq(conds[0], conds[1])
+        f2 = h * diff_eq(conds[0] + h, conds[1] + f1)
+        yf = conds[1] + (1 / 2 * (f1 + f2))
         solutions.append((conds[0] + h, yf))
 
     return solutions  # Retorno una lista con las iteraciones.
@@ -35,7 +34,6 @@ if __name__ == '__main__':
     h = P / desired_points_per_cycle
 
     # Verifico el valor del coeficiente de amortiguamiento obtenido.
-    result = euler_mejorado(lambda x, v, t: (-456.341 * v / m) - (K * x / m) + Fm / m * math.cos(2 * math.pi * t / P),
+    result = euler_mejorado(lambda x, v: (-4778225.582 * v / m) - (K * x / m) + (Fm / m) * math.cos(2 * math.pi / P),
                             [(0, 0)], h)
-    print()
     print("Valor de la ecuación diferencial evaluada en el 'c' hallado = ", result[-1][1], "m")

@@ -32,7 +32,7 @@ if __name__ == '__main__':
     try:
         # Valores iniciales para X0 y X1
         X0 = 5.0
-        X1 = 6.0
+        X1 = 50.0
 
         # Calcula el coeficiente de amortiguamiento "c" que evita vibraciones excesivas
         coeficiente_amortiguamiento = ms(g, X0, X1, tolerancia)

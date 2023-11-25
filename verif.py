@@ -12,7 +12,7 @@ P = 1.0351603978423491  # Período en segundos
 
 # Runge-Kutta de segundo orden. Recibe una ecuación diferencial, unas condiciones iniciales y un valor de h.
 # 'initial_conds' es una lista de tuplas, donde cada tupla es un par ordenado (x; y)
-def euler_mejorado(diff_eq: Callable[[float, float, float], float], initial_conds: List[Tuple[float, float]], h: float) -> List[Tuple[float, float]]:
+def euler_mejorado(diff_eq: Callable[[float, float, float], Tuple[float, float]], initial_conds: List[Tuple[float, float]], h: float) -> List[Tuple[float, float]]:
     solutions = [initial_conds[0]]  # Inicializa la lista de soluciones
 
     # Inicializa las variables de ciclo y tiempo
@@ -21,17 +21,20 @@ def euler_mejorado(diff_eq: Callable[[float, float, float], float], initial_cond
     # Bucle que verifica que se hagan 500 cálculos por período.
     while current_time < P:
         conds = solutions[-1] # Las condiciones iniciales de la iteracion actual (xi+1; yi+1) es la solucion de la iteracion previa (xi; yi)
-        f1 = h * diff_eq(conds[1], conds[0], current_time)
-        f2 = h * diff_eq(conds[1] + f1, conds[0] + h, current_time + h)
+        f1, g1 = diff_eq(conds[1], conds[0], current_time)
+        f2, g2 = diff_eq(conds[1] + h * g1, conds[0] + h * f1, current_time + h)
         yf = conds[0] + (1 / 2 * (f1 + f2))
+        vf = conds[1] + (1 / 2 * (g1 + g2))
         current_time += h # Incremento la variable que controla el bucle.
-        solutions.append((conds[0] + h, yf))
+        solutions.append((yf, vf))
 
     return solutions # Retorno una lista con las iteraciones.
 
 # Función para la ecuación diferencial con la fuerza cíclica
 def diff_eq(x, v, t):
-    return (-456.341 * v/m) - (K * x / m) + Fm/m * math.cos(2 * math.pi * t / P)
+    dx_dt = v
+    dv_dt = (-456.341 * v/m) - (K * x / m) + Fm/m * math.cos(2 * math.pi * t / P)
+    return dx_dt, dv_dt
 
 if __name__ == '__main__':
     desired_points_per_cycle = 500
