@@ -15,14 +15,15 @@ initial_conditions = [(0, 0)]  # Pares de valores (x;y)
 
 # Ecuacion diferencial con la fuerza cíclica
 def ec_dif(c):
-    return lambda v, x: -(c / m) * v - (K / m) * x + (Fm / m) * np.cos((2 * np.pi / P) * v)
+    return lambda v, x, t: -(c / m) * v - (K / m) * x + (Fm / m) * np.cos((2 * np.pi / P) * t)
 
 
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
     diff_eq_c = ec_dif(c)
-    solution = euler_mejorado(diff_eq_c, initial_conditions, h)
-    return solution[-1][1]  # Devuelve el valor en y de la última iteración del método.
+    solution = euler_mejorado(diff_eq_c, initial_conditions, h, P)
+    sol = solution[-1][1]
+    return sol  # Devuelve el valor en y de la última iteración del método.
 
 
 # Función a usar con el método de la secante.
@@ -37,7 +38,8 @@ if __name__ == '__main__':
         # Calcula el coeficiente de amortiguamiento "c" que evita vibraciones excesivas
         coeficiente_amortiguamiento = ms(g, X0, X1, tolerancia)
 
-        print(f"El valor del coeficiente de amortiguamiento que evita vibraciones excesivas es: {coeficiente_amortiguamiento:.3f}")
+        print(
+            f"El valor del coeficiente de amortiguamiento que evita vibraciones excesivas es: {coeficiente_amortiguamiento:.3f}")
 
         # Utiliza el coeficiente de amortiguamiento en la función f(c)
         amplitud_deseada = f(coeficiente_amortiguamiento)
