@@ -1,6 +1,7 @@
 import math
 from typing import Callable
 
+
 def metodo_secante(f: Callable[[float], float], x0: float, x1: float, err: float):
     """
         Método de la secante para encontrar la raíz de una función.
@@ -26,12 +27,6 @@ def metodo_secante(f: Callable[[float], float], x0: float, x1: float, err: float
         x_next = x_temp
 
     return x_next
-
-
-# Ejemplo de uso:
-# Definir una función, por ejemplo, f(x) = x^2 - 4
-def funcion_ejemplo(x):
-    return x ** 2 - 4
 
 
 if __name__ == '__main__':

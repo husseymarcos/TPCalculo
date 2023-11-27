@@ -20,7 +20,8 @@ def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List
     current_time: float = 0
 
     while current_time <= P:
-        conds = solutions[-1]  # Condiciones iniciales de la iteración actual (xi+1, yi+1) es la solución de la iteración previa (
+        conds = solutions[-1]  # Condiciones iniciales de la iteración actual (xi+1, yi+1) es la solución de la
+        # iteración previa (
         # xi, yi)
 
         # Calcular k1 y k2 usando la ecuación diferencial
@@ -42,5 +43,5 @@ def euler_mejorado(diff_eq: Callable[[float, float], float], initial_conds: List
 if __name__ == '__main__':
 
     # Verifico el valor del coeficiente de amortiguamiento obtenido.
-    result = euler_mejorado(lambda t, v: (-413.023 * v / m) - (K * (v*t) / m) + (Fm / m) * math.sin(2 * math.pi / P) * t, [(0, 0)], h, P)
+    result = euler_mejorado(lambda t, v: (-92051.795 * v / m) - (K * (v*t) / m) + (Fm / m) * math.sin(2 * math.pi / P) * t, [(0, 0)], h, P)
     print("Valor de la ecuación diferencial evaluada en el 'c' hallado = ", result[-1][1], "m")
