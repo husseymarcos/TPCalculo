@@ -14,19 +14,24 @@ initial_conditions = [(0, 0)]  # Pares de valores (x;y)
 
 # La ecuación diferencial resulta una f(t, v(t)).
 def fuerza(c):
-    def ecuacion(x, v):
+    def ecuacion(t, x, v):
         # Ecuación de movimiento con término de amortiguamiento y resorte
         ec_movimiento = - (c * v / m) - (K * x / m)
 
-        return ec_movimiento
+        # Término adicional para el golpe cíclico en cada periodo
+        if t == P:
+            ec_golpe = Fm / m
+        else:
+            ec_golpe = 0
+
+        return ec_movimiento + ec_golpe
 
     return ecuacion
 
 
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
-    diff_eq_c = fuerza(c)
-    solution = euler_mejorado(diff_eq_c, 0, 0, h, 500)
+    solution = euler_mejorado(fuerza(c), 0, 0, h, 500)
     sol = solution[-1][1]
     return sol  # Devuelve el valor en y de la última iteración del método.
 
@@ -37,8 +42,8 @@ g = lambda c: f(c) - xadm
 if __name__ == '__main__':
     try:
         # Valores iniciales para X0 y X1
-        X0 = 10
-        X1 = 20
+        X0 = 0.1
+        X1 = 0.2
 
         # Calcula el coeficiente de amortiguamiento "c" que evita vibraciones excesivas
         coeficiente_amortiguamiento = ms(g, X0, X1, tolerancia)
