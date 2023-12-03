@@ -1,6 +1,5 @@
 from metodo_secante import metodo_secante as ms
 from pvi import euler_mejorado
-import numpy as np
 
 # Datos del problema
 m = 9500  # Masa en kg (9.5 toneladas)
@@ -12,23 +11,22 @@ tolerancia = 1e-3  # Tolerancia para el método de la secante
 h = P / 500  # Quiero 500 puntos por ciclo.
 initial_conditions = [(0, 0)]  # Pares de valores (x;y)
 
-# Ecuacion diferencial con la fuerza cíclica
-"""
-Hay 2 ecuaciones presentes en el sistema: la de Newton, y x'(t) = v(t)
-Si se quisiera hallar x(t), se integra a ambas partes respecto al tiempo, obteniendo:
-x(t) = v(t) * t
-"""
-
 
 # La ecuación diferencial resulta una f(t, v(t)).
-def ec_dif(c):
-    return lambda t, v: (Fm * np.cos(2 * np.pi * t / P) / m) - (c * v / m) - (K * v * t / m)
+def fuerza(c):
+    def ecuacion(x, v):
+        # Ecuación de movimiento con término de amortiguamiento y resorte
+        ec_movimiento = - (c * v / m) - (K * x / m)
+
+        return ec_movimiento
+
+    return ecuacion
 
 
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
-    diff_eq_c = ec_dif(c)
-    solution = euler_mejorado(diff_eq_c, initial_conditions, h, P)
+    diff_eq_c = fuerza(c)
+    solution = euler_mejorado(diff_eq_c, 0, 0, h, 500)
     sol = solution[-1][1]
     return sol  # Devuelve el valor en y de la última iteración del método.
 

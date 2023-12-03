@@ -1,5 +1,5 @@
-import math
 from typing import Callable
+
 
 def metodo_secante(f: Callable[[float], float], x0: float, x1: float, err: float):
     """
@@ -17,6 +17,9 @@ def metodo_secante(f: Callable[[float], float], x0: float, x1: float, err: float
     x_next = x1
     x_prev = x0
 
+    a = f(x_next)
+    b = f(x_prev)
+
     while abs((x_next - x_prev)) > err:
         # Calcular el siguiente valor de x usando el método de la secante
         x_temp = x_next - f(x_next) * (x_next - x_prev) / (f(x_next) - f(x_prev))
@@ -28,9 +31,20 @@ def metodo_secante(f: Callable[[float], float], x0: float, x1: float, err: float
     return x_next
 
 
-# Ejemplo de uso:
-# Definir una función, por ejemplo, f(x) = x^2 - 4
-def funcion_ejemplo(x):
+def prueba_funcion(x: float) -> float:
     return x ** 2 - 4
 
 
+if __name__ == "__main__":
+    # Valores iniciales para x0 y x1
+    x0 = 1
+    x1 = 3
+
+    # Tolerancia para la convergencia
+    tolerancia = 1e-5
+
+    # Aplicar el método de la secante
+    raiz_aproximada = metodo_secante(prueba_funcion, x0, x1, tolerancia)
+
+    # Imprimir el resultado
+    print(f"Aproximación de la raíz: {raiz_aproximada}")
