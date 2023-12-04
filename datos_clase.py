@@ -41,10 +41,26 @@ def fuerza(c):
     return ecuacion
 
 
+def Euler(f, x0, y0, h, n):
+    x = []
+    y = []
+    x.append(x0)
+    y.append(y0)
+
+    t = x0
+
+    for i in range(1, n):
+        t += h
+        x.append(x0 + i * h)
+        y.append(y[i - 1] + h * f(x[i - 1], y[i - 1], t))
+
+    return [x, y]
+
+
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
-    solution = euler_mejorado(fuerza(c), 0, 0, h, num_puntos_por_ciclo)
-    sol = solution[1][-1]
+    solution = Euler(fuerza(c), 0, 0, h, num_puntos_por_ciclo)
+    sol = max(solution[1])
     return sol
 
 
@@ -69,3 +85,5 @@ if __name__ == '__main__':
 
     except Exception as e:
         print(f"Se produjo un error: {e}")
+
+
