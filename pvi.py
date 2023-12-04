@@ -7,8 +7,11 @@ def euler_mejorado(f, x0, y0, h, n):
     for i in range(1, n):
         t_i = (i - 1) * h
         x_i = x[i - 1]
-        y_pred = y[i - 1] + h * f(x_i, y[i - 1], t_i)
-        y_corr = y[i - 1] + (h / 2) * (f(x_i, y[i - 1], t_i) + f(x_i + h, y_pred, t_i + h))
+        a = f(x_i, y[i - 1], t_i)
+        y_pred = y[i - 1] + h * a
+        b = f(x_i, y[i - 1], t_i)
+        c = f(x_i + h, y_pred, t_i + h)
+        y_corr = y[i - 1] + (h / 2) * (b + c)
         x.append(x_i + h)
         y.append(y_corr)
 

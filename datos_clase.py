@@ -2,22 +2,27 @@ from metodo_secante import metodo_secante as ms
 from pvi import euler_mejorado
 
 # Datos del problema
-m = 9500  # Masa en kg (9.5 toneladas)
-K = 350e3  # Constante del resorte en N/m (350 N/mm)
-Fm = 1650  # Fuerza máxima en N
-xadm = 3.4 / 1000  # Desplazamiento admisible en metros (3.4 mm)
-P = 1.0351603978423491  # Periodo en segundos
+m = 10000  # Masa en kg (9.5 toneladas)
+K = 600e3  # Constante del resorte en N/m (350 N/mm)
+Fm = 1200  # Fuerza máxima en N
+xadm = 1.5 / 1000  # Desplazamiento admisible en metros (3.4 mm)
+P = 0.8111  # Periodo en segundos
 tolerancia = 1e-3  # Tolerancia para el método de la secante
 initial_conditions = [(0, 0)]  # Pares de valores (x;y)
 num_puntos_por_ciclo = 500
-
 h = P / num_puntos_por_ciclo
 
 
 def fuerza(c):
     def F(t):
+        # Encuentra el número de períodos completos que han pasado
+        num_periodos_completos = int(t // (0.1 * P))
+
+        # Encuentra el tiempo relativo dentro del ciclo actual
+        t_rel = t - num_periodos_completos * 0.1 * P
+
         # Término adicional para el golpe cíclico una vez por periodo
-        if t % P == 0:
+        if 0 <= t_rel < 0.1 * P:
             return Fm
         else:
             return 0
