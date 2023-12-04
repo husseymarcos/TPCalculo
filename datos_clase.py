@@ -43,7 +43,7 @@ def fuerza(c):
 
 def Euler(f, x0, y0, h, n):
     x = []
-    y = []
+    y = [] # y = velocidad
     x.append(x0)
     y.append(y0)
 
@@ -51,7 +51,7 @@ def Euler(f, x0, y0, h, n):
 
     for i in range(1, n):
         t += h
-        x.append(x0 + i * h)
+        x.append(x[i-1] + y[i-1] * h)
         y.append(y[i - 1] + h * f(x[i - 1], y[i - 1], t))
 
     return [x, y]
