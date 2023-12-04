@@ -15,14 +15,16 @@ h = P / num_puntos_por_ciclo
 
 def fuerza(c):
     def F(t):
-        # Encuentra el número de períodos completos que han pasado
-        num_periodos_completos = int(t // (0.1 * P))
+        # Encuentra el número de ciclos completos que han pasado
+        num_ciclos_completos = int(t // P)
 
         # Encuentra el tiempo relativo dentro del ciclo actual
-        t_rel = t - num_periodos_completos * 0.1 * P
+        t_rel = t - num_ciclos_completos * P
+
+        p_cicl = 0.1 * P
 
         # Término adicional para el golpe cíclico una vez por periodo
-        if 0 <= t_rel < 0.1 * P:
+        if 0 <= t_rel < p_cicl and num_ciclos_completos < 10:
             return Fm
         else:
             return 0
