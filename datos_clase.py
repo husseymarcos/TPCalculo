@@ -1,5 +1,7 @@
+from matplotlib import pyplot as plt
+import numpy as np
+
 from metodo_secante import metodo_secante as ms
-from pvi import euler_mejorado
 
 # Datos del problema
 m = 10000  # Masa en kg (9.5 toneladas)
@@ -30,12 +32,8 @@ def fuerza(c):
             return 0
 
     def ecuacion(x, v, t):
-        # Devuelve la aceleracion x''
         ec_movimiento = - (c * v / m) - (K * x / m)
-
-        # Término adicional para el golpe cíclico
         ec_golpe = F(t) / m
-
         return ec_movimiento + ec_golpe
 
     return ecuacion
@@ -59,9 +57,19 @@ def Euler(f, x0, y0, h, n):
 
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
-    solution = Euler(fuerza(c), 0, 0, h, num_puntos_por_ciclo)
-    sol = max(solution[1])
-    return sol
+    solution = Euler(fuerza(c), 0, 0, h, num_puntos_por_ciclo * 10)
+
+
+    tiempo_arreglo = np.arange(0, 10 * P, P / 500)
+    plt.plot(tiempo_arreglo, solution[0], label='Solución Euler')
+    plt.xlabel('x)')
+    plt.ylabel('y')
+    plt.title('Solución de la Ecuación Diferencial: y en función de x')
+    plt.legend()
+    plt.show()
+    xmax = max(solution[0])
+
+    return xmax
 
 
 # Función a usar con el método de la secante.
@@ -70,8 +78,8 @@ g = lambda c: f(c) - xadm
 if __name__ == '__main__':
     try:
         # Valores iniciales para X0 y X1
-        X0 = 0.1
-        X1 = 0.2
+        X0 = 10
+        X1 = 20
 
         # Calcula el coeficiente de amortiguamiento "c" que evita vibraciones excesivas
         coeficiente_amortiguamiento = ms(g, X0, X1, tolerancia)
