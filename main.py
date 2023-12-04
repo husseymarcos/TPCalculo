@@ -6,23 +6,29 @@ m = 9500  # Masa en kg (9.5 toneladas)
 K = 350e3  # Constante del resorte en N/m (350 N/mm)
 Fm = 1650  # Fuerza máxima en N
 xadm = 3.4 / 1000  # Desplazamiento admisible en metros (3.4 mm)
-P = 1.0351603978423491  # Periodo en segundos
+P = 10351603978423491.  # Periodo en segundos
 tolerancia = 1e-3  # Tolerancia para el método de la secante
-h = P / 500  # Quiero 500 puntos por ciclo.
 initial_conditions = [(0, 0)]  # Pares de valores (x;y)
+num_puntos_por_ciclo = 500
+
+h = P / num_puntos_por_ciclo
 
 
-# La ecuación diferencial resulta una f(t, v(t)).
+# La ecuación diferencial resulta en una f(x, v).
 def fuerza(c):
-    def ecuacion(t, x, v):
-        # Ecuación de movimiento con término de amortiguamiento y resorte
+    def F(t):
+        # Término adicional para el golpe cíclico una vez por periodo
+        if t % P == 0:
+            return Fm
+        else:
+            return 0
+
+    def ecuacion(x, v, t):
+        # Devuelve la aceleracion x''
         ec_movimiento = - (c * v / m) - (K * x / m)
 
-        # Término adicional para el golpe cíclico en cada periodo
-        if t == P:
-            ec_golpe = Fm / m
-        else:
-            ec_golpe = 0
+        # Término adicional para el golpe cíclico
+        ec_golpe = F(t) / m
 
         return ec_movimiento + ec_golpe
 
@@ -31,13 +37,13 @@ def fuerza(c):
 
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
-    solution = euler_mejorado(fuerza(c), 0, 0, h, 500)
-    sol = solution[-1][1]
-    return sol  # Devuelve el valor en y de la última iteración del método.
+    solution = euler_mejorado(fuerza(c), 0, 0, h, int(num_puntos_por_ciclo))
+    sol = solution[1][-1]
+    return sol
 
 
 # Función a usar con el método de la secante.
-g = lambda c: f(c) - xadm
+g = lambda c: abs(f(c) - xadm)
 
 if __name__ == '__main__':
     try:
