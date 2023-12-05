@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 from metodo_secante import metodo_secante as ms
 
 # Datos del problema
@@ -26,30 +28,34 @@ def ec_dif(c):
             return 0
 
     def ecuacion(x, v, t):
-        return F(t) / m - (c * v / m) - (K * x / m)
+        return (F(t) / m) - (c * v / m) - (K * x / m)
 
     return ecuacion
 
 
 def Euler(f, x0, y0, h, n):
-    x = []
-    y = []  # y = velocidad
+    x = []  # desplazamientos
+    v = []  # velocidad
+    t = []
     x.append(x0)
-    y.append(y0)
+    v.append(y0)
+    t.append(0)
+    j = 0
 
-    for i in range(1, n):
-        t = h * (i - 1)
-        x.append(x[i - 1] + y[i - 1] * h)
-        y.append(y[i - 1] + h * f(x[i - 1], y[i - 1], t))
-
-    return [x, y]
+    while j < 10:
+        for i in range(0, n):
+            t.append(t[i] + h)
+            x.append(x[i] + (v[i] * h))
+            v.append(v[i] + ( h * f(x[i], v[i], t[i])))
+        j += 1
+    return x
 
 
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
-    solution = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo * 10)
-    xmax = max(solution[0])
-    return xmax / 10
+    solution = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo)
+    xmax = max(solution)
+    return xmax
 
 
 # Función a usar con el método de la secante.
@@ -73,8 +79,8 @@ if __name__ == '__main__':
 
         # Verifica para c = 30
         c = 30
-        solucion_c_30 = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo * 10)
-        xmax_c_30 = max(solucion_c_30[0])
+        solucion_c_30 = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo)
+        xmax_c_30 = max(solucion_c_30)
         g_c_30 = g(c)
 
         print()
