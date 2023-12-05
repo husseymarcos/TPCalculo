@@ -1,4 +1,5 @@
-import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib import pyplot as plt
 
 from metodo_secante import metodo_secante as ms
 
@@ -14,47 +15,46 @@ h1 = P / num_puntos_por_ciclo
 
 
 def ec_dif(c):
-    def F(t):
-
-        # Encuentra el tiempo relativo dentro del ciclo actual
-        t_rel = t - (int(t // P) * P)
-
-        p_cicl = 0.1 * P
-
-        # Término adicional para el golpe cíclico una vez por periodo
-        if 0 <= t_rel < p_cicl:
-            return Fm
-        else:
-            return 0
-
     def ecuacion(x, v, t):
-        return (F(t) / m) - (c * v / m) - (K * x / m)
+        # Término adicional para el golpe cíclico una vez por periodo
+        p_cicl = 0.1 * P
+        golpe_ciclico = Fm if 0 <= t < p_cicl else 0
+
+        return (golpe_ciclico / m) - (c * v / m) - (K * x / m)
 
     return ecuacion
 
 
-def Euler(f, x0, y0, h, n):
+def Euler(f, x0, y0, h, n, num_ciclos):
     x = []  # desplazamientos
     v = []  # velocidad
     t = []
+
     x.append(x0)
     v.append(y0)
     t.append(0)
-    j = 0
 
-    while j < 10:
-        for i in range(0, n):
-            t.append(t[i] + h)
-            x.append(x[i] + (v[i] * h))
-            v.append(v[i] + ( h * f(x[i], v[i], t[i])))
-        j += 1
-    return x
+    for j in range(num_ciclos):
+        for i in range(n):
+            t.append(t[-1] + h)
+            x.append(x[-1] + v[-1] * h)
+            v.append(v[-1] + h * f(x[-1], v[-1], t[-1]))
+
+    return t, x  # Devolver también la lista de tiempos
 
 
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
-    solution = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo)
+    tiempos, solution = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo, 10)
     xmax = max(solution)
+
+    plt.plot(tiempos, solution, label='Solución Euler')
+    plt.xlabel('Tiempo')
+    plt.ylabel('Desplazamiento')
+    plt.title('Solución de la Ecuación Diferencial: Desplazamiento en función del tiempo')
+    plt.legend()
+    plt.show()
+
     return xmax
 
 
@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
         # Verifica para c = 30
         c = 30
-        solucion_c_30 = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo)
+        solucion_c_30 = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo, 10)
         xmax_c_30 = max(solucion_c_30)
         g_c_30 = g(c)
 
