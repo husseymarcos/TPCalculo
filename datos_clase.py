@@ -12,29 +12,27 @@ P = 0.8111  # Periodo en segundos
 tolerancia = 1e-3  # Tolerancia para el método de la secante
 initial_conditions = [(0, 0)]  # Pares de valores (x;y)
 num_puntos_por_ciclo = 500
-h = P / num_puntos_por_ciclo
+h1 = P / num_puntos_por_ciclo
 
 
-def fuerza(c):
+def ec_dif(c):
     def F(t):
         # Encuentra el número de ciclos completos que han pasado
         num_ciclos_completos = int(t // P)
 
         # Encuentra el tiempo relativo dentro del ciclo actual
-        t_rel = t - num_ciclos_completos * P
+        t_rel = t - (num_ciclos_completos * P)
 
         p_cicl = 0.1 * P
 
         # Término adicional para el golpe cíclico una vez por periodo
-        if 0 <= t_rel < p_cicl and num_ciclos_completos < 10:
+        if 0 <= t_rel < p_cicl:
             return Fm
         else:
             return 0
 
     def ecuacion(x, v, t):
-        ec_movimiento = - (c * v / m) - (K * x / m)
-        ec_golpe = F(t) / m
-        return ec_movimiento + ec_golpe
+        return F(t) / m - (c * v / m) - (K * x / m)
 
     return ecuacion
 
@@ -48,7 +46,7 @@ def Euler(f, x0, y0, h, n):
     t = x0
 
     for i in range(1, n):
-        t += h
+        t = h * (i - 1)
         x.append(x[i-1] + y[i-1] * h)
         y.append(y[i - 1] + h * f(x[i - 1], y[i - 1], t))
 
@@ -57,18 +55,16 @@ def Euler(f, x0, y0, h, n):
 
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
-    solution = Euler(fuerza(c), 0, 0, h, num_puntos_por_ciclo * 10)
+    solution = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo * 10)
 
-
-    tiempo_arreglo = np.arange(0, 10 * P, P / 500)
-    plt.plot(tiempo_arreglo, solution[0], label='Solución Euler')
-    plt.xlabel('x)')
-    plt.ylabel('y')
-    plt.title('Solución de la Ecuación Diferencial: y en función de x')
-    plt.legend()
-    plt.show()
+    #tiempo_arreglo = np.arange(0, 10 * P, P / 500)
+    #plt.plot(tiempo_arreglo, solution[0], label='Solución Euler')
+    #plt.xlabel('x)')
+    #plt.ylabel('y')
+    #plt.title('Solución de la Ecuación Diferencial: y en función de x')
+    #plt.legend()
+    #plt.show()
     xmax = max(solution[0])
-
     return xmax
 
 
