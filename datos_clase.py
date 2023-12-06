@@ -16,16 +16,32 @@ h1 = P / num_puntos_por_ciclo
 
 def ec_dif(c):
     def ecuacion(x, v, t):
-        # Término adicional para el golpe cíclico una vez por periodo
-        p_cicl = 0.1 * P
-        golpe_ciclico = Fm if 0 <= t < p_cicl else 0
+        # Número total de ciclos
+        num_ciclos = 10
 
-        return (golpe_ciclico / m) - (c * v / m) - (K * x / m)
+        # Duración de cada ciclo
+        duracion_ciclo = P
+
+        # Determinar el número de ciclo actual
+        num_ciclo_actual = int(t / duracion_ciclo)
+
+        # Verificar si estamos dentro del golpe cíclico en el ciclo actual
+        if 0 <= t % duracion_ciclo < 0.1 * P:
+            golpe_ciclico = Fm
+        else:
+            golpe_ciclico = 0
+
+        # Aplicar el golpe cíclico solo durante los primeros 10 ciclos
+        if num_ciclo_actual < num_ciclos:
+            return (golpe_ciclico / m) - (c * v / m) - (K * x / m)
+        else:
+            # Sin golpe cíclico después de los primeros 10 ciclos
+            return - (c * v / m) - (K * x / m)
 
     return ecuacion
 
 
-def Euler(f, x0, y0, h, n, num_ciclos):
+def Euler(f, x0, y0, h, n):
     x = []  # desplazamientos
     v = []  # velocidad
     t = []
@@ -34,27 +50,19 @@ def Euler(f, x0, y0, h, n, num_ciclos):
     v.append(y0)
     t.append(0)
 
-    for j in range(num_ciclos):
-        for i in range(n):
-            t.append(t[-1] + h)
-            x.append(x[-1] + v[-1] * h)
-            v.append(v[-1] + h * f(x[-1], v[-1], t[-1]))
+    for i in range(1, n):
+        t_actual = t[-1] + h
+        v.append(v[-1] + h * f(x[-1], v[-1], t_actual))
+        x.append(x[-1] + v[-1] * h)
+        t.append(t_actual)
 
-    return t, x  # Devolver también la lista de tiempos
+    return t, x
 
 
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
-    tiempos, solution = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo, 10)
+    tiempos, solution = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo * 10)
     xmax = max(solution)
-
-    plt.plot(tiempos, solution, label='Solución Euler')
-    plt.xlabel('Tiempo')
-    plt.ylabel('Desplazamiento')
-    plt.title('Solución de la Ecuación Diferencial: Desplazamiento en función del tiempo')
-    plt.legend()
-    plt.show()
-
     return xmax
 
 
@@ -79,8 +87,8 @@ if __name__ == '__main__':
 
         # Verifica para c = 30
         c = 30
-        solucion_c_30 = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo, 10)
-        xmax_c_30 = max(solucion_c_30)
+        solucion_c_30 = Euler(ec_dif(c), 0, 0, h1, num_puntos_por_ciclo * 10)
+        xmax_c_30 = max(solucion_c_30[1])
         g_c_30 = g(c)
 
         print()
