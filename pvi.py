@@ -1,5 +1,3 @@
-from datos_clase import ec_dif
-
 P = 0.8111
 # f = f(x, v, t)
 def euler_mejorado(f, x0, y0, h, n):
