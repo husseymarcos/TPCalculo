@@ -70,34 +70,27 @@ def ec_dif(c):
 
 
 def rungekutta2(f, x0, y0, h, n):
-    x = []
-    y = []
+    x = [] # desplazamientos
+    y = [] # velocidades
     t = []
     x.append(x0)
     y.append(y0)
     t.append(0)
 
-    for i in range(1, n + 1):
-        x_i = x0 + i * h
-        k1 = h * f(x0, y0, t[i-1])
-        k2 = h * f(x_i, y0 + k1, t[i-1])
+    for i in range(0, n):
+        t.append(t[i] + h)
+        x.append(x[i] + y[i]*h)
+        y.append(y[i] + h * f(x[i], y[i], t[i]))
 
-        x.append(x_i)
-        y.append(y0 + 0.5 * (k1 + k2))
-        t.append(t[i - 1] + h)
-
-        x0 = x_i
-        y0 = y[i]
-
-    a = t[-1]
-    b = x[-1]
     return [x, y, t]
 
 
 # Función para calcular la amplitud deseada en función de "c"
 def f(c):
-    solution = rungekutta2(ec_dif(c), 0, 0, h, num_puntos_por_ciclo * 10)
-    xmax = max(solution)  # Apply max to absolute values
+    # La cantidad de puntos es la correspondiente a 10 ciclos, lo que aproximadamente
+    # se tarda en llegar al regimen estacionario.
+    solution, y, t = rungekutta2(ec_dif(c), 0, 0, h, num_puntos_por_ciclo * 10)
+    xmax = max(solution)
     return xmax
 
 
