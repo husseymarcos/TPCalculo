@@ -76,7 +76,7 @@ def rungekutta2(f, x0, y0, h, n):
         #y.append(y[i] + h * f(x[i], y[i], t[i]))
         # Traducir esto a funciones de runge kutta de 2do orden
         f1 = h * f(x[i], y[i], t[i])
-        f2 = h * f(x[i] + h, y[i] + f1, t[i] + h)
+        f2 = h * f(x[i+1], y[i] + f1, t[i+1])
         y.append(y[i] + 0.5 * (f1 + f2))
 
     return [x, y, t]
