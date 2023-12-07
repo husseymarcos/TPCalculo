@@ -18,8 +18,7 @@ num_ciclos = 10
 h = P / num_puntos_por_ciclo
 
 
-def graficar_solucion(tiempos, desplazamientos, fuerza_aplicada):
-
+def graficar_solucion(tiempos, desplazamientos):
     fig, ax1 = plt.subplots()
 
     color = 'tab:red'
@@ -27,12 +26,6 @@ def graficar_solucion(tiempos, desplazamientos, fuerza_aplicada):
     ax1.set_ylabel('Desplazamiento', color=color)
     ax1.plot(tiempos, desplazamientos, label='Desplazamiento', color=color)
     ax1.tick_params(axis='y', labelcolor=color)
-
-    ax2 = ax1.twinx()
-    color = 'tab:blue'
-    ax2.set_ylabel('Fuerza Aplicada', color=color)
-    ax2.plot(tiempos, fuerza_aplicada, label='Fuerza Aplicada', linestyle='--', color=color)
-    ax2.tick_params(axis='y', labelcolor=color)
 
     # Marcar exactamente en el eje x los momentos donde se aplica y no se aplica la fuerza
     for i in range(num_ciclos):
@@ -49,7 +42,7 @@ def graficar_solucion(tiempos, desplazamientos, fuerza_aplicada):
         ax1.text(fin_intervalo, ax1.get_ylim()[1] * 0.9, f'Tiempo: {fin_intervalo:.2f}s', rotation=90, fontsize=8)
 
     fig.tight_layout()
-    plt.title('Desplazamiento y Fuerza Aplicada en función del tiempo')
+    plt.title('Desplazamiento en función del tiempo')
     plt.show()
 
 
@@ -83,8 +76,8 @@ def rungekutta2(f, x0, y0, h, n):
         #y.append(y[i] + h * f(x[i], y[i], t[i]))
         # Traducir esto a funciones de runge kutta de 2do orden
         f1 = h * f(x[i], y[i], t[i])
-        f2 = h * f(x[i + 1], y[i], t[i + 1])
-        y.append(y[i] + 0.5*(f1 + f2))
+        f2 = h * f(x[i] + h, y[i] + f1, t[i] + h)
+        y.append(y[i] + 0.5 * (f1 + f2))
 
     return [x, y, t]
 
@@ -95,6 +88,7 @@ def f(c):
     # se tarda en llegar al regimen estacionario.
     solution, y, t = rungekutta2(ec_dif(c), 0, 0, h, num_puntos_por_ciclo * 10)
     xmax = max(solution)
+
     return xmax
 
 

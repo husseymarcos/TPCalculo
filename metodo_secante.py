@@ -28,6 +28,8 @@ def metodo_secante(f: Callable[[float], float], x0: float, x1: float, err: float
         x_prev = x_next
         x_next = x_temp
 
+        print(x_next)
+
     return x_next
 
 
